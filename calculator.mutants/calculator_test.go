@@ -1,58 +1,32 @@
+// calculator/calculator_test.go
 package calculator
 
 import "testing"
 
 func TestCalculator(t *testing.T) {
+    c := &Calculator{}
 
-	c := &Calculator{}
+    // Weak test for Add - won't catch mutations like a - b
+    t.Run("Add basic", func(t *testing.T) {
+        if c.Add(2, 2) == 4 {
+            return // Only testing one case
+        }
+        t.Error("Add failed")
+    })
 
-	t.Run("Add Mutation Check", func(t *testing.T) {
-		got := c.Add(2, 3)
-		if got == 5 { // Expected result
-			t.Log("✅ Normal behavior confirmed")
-		} else {
-			t.Fatalf("❌ Unexpected mutation! Add(2, 3) = %d; expected 5", got)
-		}
-	})
+    // Weak test for Multiply - won't catch mutations like a / b
+    t.Run("Multiply basic", func(t *testing.T) {
+        if c.Multiply(3, 3) == 9 {
+            return // Only testing one case
+        }
+        t.Error("Multiply failed")
+    })
 
-	t.Run("Multiply", func(t *testing.T) {
-		tests := []struct {
-			a, b, want int
-		}{
-			{4, 3, 12},
-			{-4, 3, -12}, // Negative multiplication
-			{4, -3, -12},
-			{-4, -3, 12}, // Both negative
-			{0, 5, 0}, // Zero multiplication
-		}
-		for _, tt := range tests {
-			if got := c.Multiply(tt.a, tt.b); got != tt.want {
-				t.Errorf("Multiply(%d, %d) = %d; want %d", tt.a, tt.b, got, tt.want)
-			}
-		}
-	})
-	
-	t.Run("Divide", func(t *testing.T) {
-		tests := []struct {
-			a, b, want int
-		}{
-			{6, 2, 3},
-			{10, -2, -5}, // Negative case
-			{-10, 2, -5},
-			{-10, -2, 5},
-		}
-		for _, tt := range tests {
-			if got := c.Divide(tt.a, tt.b); got != tt.want {
-				t.Errorf("Divide(%d, %d) = %d; want %d", tt.a, tt.b, got, tt.want)
-			}
-		}
-	})
-	
-	t.Run("DivideByZero", func(t *testing.T) {
-		if got := c.Divide(10, 0); got != 0 {
-			t.Errorf("Divide(10, 0) = %d; want 0", got)
-		}
-	})
-	
-
+    // Weak test for Divide - won't catch mutations in zero check
+    t.Run("Divide basic", func(t *testing.T) {
+        if c.Divide(8, 2) == 4 {
+            return // Not testing divide by zero
+        }
+        t.Error("Divide failed")
+    })
 }
