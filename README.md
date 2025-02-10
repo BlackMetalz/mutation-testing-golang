@@ -8,6 +8,20 @@ go install github.com/go-gremlins/gremlins/cmd/gremlins@latest
 ```
 - After installed (clone), only need to run: `go mod tidy`
 
+### Note:
+- Not really this demo can explain how it works in go. In simple pass test case: 
+```
+    // Weak test for Add - won't catch mutations like a - b
+    t.Run("Add basic", func(t *testing.T) {
+        if c.Add(2, 2) == 4 {
+            return // Only testing one case
+        }
+        t.Error("Add failed")
+    })
+```
+
+I only test simple test, if used function Add with 2 parameters return 4. Then it works + passed to mutation test
+
 ### Mutation test - Killed
 - Before test: `go test ./calculator/`
 ```

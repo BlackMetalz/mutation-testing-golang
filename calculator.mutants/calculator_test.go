@@ -3,26 +3,56 @@ package calculator
 import "testing"
 
 func TestCalculator(t *testing.T) {
-    c := &Calculator{}
 
-    // Minimal test that won't catch negative number mutations
-    t.Run("Add", func(t *testing.T) {
-        if got := c.Add(2, 3); got != 5 {
-            t.Errorf("Add(2, 3) = %d; want 5", got)
-        }
-    })
+	c := &Calculator{}
 
-    // Won't catch the negative number multiplication case
-    t.Run("Multiply", func(t *testing.T) {
-        if got := c.Multiply(4, 3); got != 12 {
-            t.Errorf("Multiply(4, 3) = %d; want 12", got)
-        }
-    })
+	t.Run("Add Mutation Check", func(t *testing.T) {
+		got := c.Add(2, 3)
+		if got == 5 { // Expected result
+			t.Log("✅ Normal behavior confirmed")
+		} else {
+			t.Fatalf("❌ Unexpected mutation! Add(2, 3) = %d; expected 5", got)
+		}
+	})
 
-    // Won't catch the negative number division case
-    t.Run("Divide", func(t *testing.T) {
-        if got := c.Divide(6, 2); got != 3 {
-            t.Errorf("Divide(6, 2) = %d; want 3", got)
-        }
-    })
+	t.Run("Multiply", func(t *testing.T) {
+		tests := []struct {
+			a, b, want int
+		}{
+			{4, 3, 12},
+			{-4, 3, -12}, // Negative multiplication
+			{4, -3, -12},
+			{-4, -3, 12}, // Both negative
+			{0, 5, 0}, // Zero multiplication
+		}
+		for _, tt := range tests {
+			if got := c.Multiply(tt.a, tt.b); got != tt.want {
+				t.Errorf("Multiply(%d, %d) = %d; want %d", tt.a, tt.b, got, tt.want)
+			}
+		}
+	})
+	
+	t.Run("Divide", func(t *testing.T) {
+		tests := []struct {
+			a, b, want int
+		}{
+			{6, 2, 3},
+			{10, -2, -5}, // Negative case
+			{-10, 2, -5},
+			{-10, -2, 5},
+		}
+		for _, tt := range tests {
+			if got := c.Divide(tt.a, tt.b); got != tt.want {
+				t.Errorf("Divide(%d, %d) = %d; want %d", tt.a, tt.b, got, tt.want)
+			}
+		}
+	})
+	
+	t.Run("DivideByZero", func(t *testing.T) {
+		if got := c.Divide(10, 0); got != 0 {
+			t.Errorf("Divide(10, 0) = %d; want 0", got)
+		}
+	})
+	
+
 }
